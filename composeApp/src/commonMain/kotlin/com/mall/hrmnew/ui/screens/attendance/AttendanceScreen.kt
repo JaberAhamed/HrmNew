@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mall.hrmnew.model.domain.AttendanceRecord
+import com.mall.hrmnew.ui.screens.dashboard.AttendanceStatusCard
 import com.mall.hrmnew.ui.theme.Spacing
 import com.mall.hrmnew.viewmodel.attendance.AttendanceViewModel
 
@@ -132,94 +133,12 @@ fun AttendanceScreen(
                             MaterialTheme.colorScheme.surface
                     )
                 ) {
-                    Column(
-                        modifier = Modifier.padding(Spacing.Large)
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column {
-                                Text(
-                                    text = "Today's Status",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                                Text(
-                                    text = if (uiState.isPunchedIn) "Punched In" else "Not Punched In",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = if (uiState.isPunchedIn)
-                                        MaterialTheme.colorScheme.primary
-                                    else
-                                        MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            Icon(
-                                imageVector = if (uiState.isPunchedIn)
-                                    Icons.Outlined.CheckCircle
-                                else
-                                    Icons.Outlined.AccessTime,
-                                contentDescription = null,
-                                tint = if (uiState.isPunchedIn)
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-
-                        if (uiState.lastPunchTime != null) {
-                            Spacer(modifier = Modifier.height(Spacing.Small))
-                            Text(
-                                text = "Last punch: ${uiState.lastPunchTime}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(Spacing.Medium))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
-                        ) {
-                            if (uiState.isPunchedIn) {
-                                OutlinedButton(
-                                    onClick = { viewModel.punchOut() },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(52.dp),
-                                    shape = RoundedCornerShape(12.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.ExitToApp,
-                                        contentDescription = null
-                                    )
-                                    Spacer(modifier = Modifier.width(Spacing.ExtraSmall))
-                                    Text("Punch Out")
-                                }
-                            } else {
-                                Button(
-                                    onClick = { viewModel.punchIn() },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(52.dp),
-                                    shape = RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.primary
-                                    )
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Login,
-                                        contentDescription = null
-                                    )
-                                    Spacer(modifier = Modifier.width(Spacing.ExtraSmall))
-                                    Text("Punch In")
-                                }
-                            }
-                        }
-                    }
+                    AttendanceStatusCard(
+                        isPunchedIn = uiState.isPunchedIn,
+                        lastPunchTime = uiState.lastPunchTime,
+                        onPunchIn = { viewModel.punchIn() },
+                        onPunchOut = { viewModel.punchOut() }
+                    )
                 }
             }
 
