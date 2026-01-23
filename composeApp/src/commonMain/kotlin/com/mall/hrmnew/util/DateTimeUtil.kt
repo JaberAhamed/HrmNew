@@ -6,7 +6,7 @@ package com.mall.hrmnew.util
  */
 fun getCurrentTimestamp(): String {
     // Mock current time for UI demonstration
-    return "2024-01-15T10:30:00Z"
+    return "2025-Jan-15 12:01am"
 }
 
 fun getCurrentTimeMillis(): Long {

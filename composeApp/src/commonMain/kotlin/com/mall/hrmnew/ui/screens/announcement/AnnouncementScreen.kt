@@ -8,7 +8,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.AttachFile
+import androidx.compose.material.icons.outlined.Business
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Event
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.People
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -46,12 +54,12 @@ fun AnnouncementScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Announcements") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Navigate back"
                         )
                     }
@@ -108,7 +116,7 @@ fun AnnouncementScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Notifications,
+                                imageVector = Icons.Outlined.Notifications,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(28.dp)
@@ -199,9 +207,6 @@ fun ModernAnnouncementItem(
                 MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
             else
                 MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
         )
     ) {
         Row(
@@ -227,10 +232,10 @@ fun ModernAnnouncementItem(
             ) {
                 Icon(
                     imageVector = when (announcement.category) {
-                        "HR" -> Icons.Default.People
-                        "Company" -> Icons.Default.Business
-                        "Event" -> Icons.Default.Event
-                        else -> Icons.Default.Notifications
+                        "HR" -> Icons.Outlined.People
+                        "Company" -> Icons.Outlined.Business
+                        "Event" -> Icons.Outlined.Event
+                        else -> Icons.Outlined.Notifications
                     },
                     contentDescription = null,
                     tint = when (announcement.priority) {
@@ -340,10 +345,10 @@ fun ModernAnnouncementDetailDialog(
                     ) {
                         Icon(
                             imageVector = when (announcement.category) {
-                                "HR" -> Icons.Default.People
-                                "Company" -> Icons.Default.Business
-                                "Event" -> Icons.Default.Event
-                                else -> Icons.Default.Notifications
+                                "HR" -> Icons.Outlined.People
+                                "Company" -> Icons.Outlined.Business
+                                "Event" -> Icons.Outlined.Event
+                                else -> Icons.Outlined.Notifications
                             },
                             contentDescription = null,
                             tint = when (announcement.priority) {
@@ -357,7 +362,7 @@ fun ModernAnnouncementDetailDialog(
 
                     IconButton(onClick = onDismiss) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = Icons.Outlined.Close,
                             contentDescription = "Close"
                         )
                     }
@@ -422,7 +427,7 @@ fun ModernAnnouncementDetailDialog(
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.AttachFile,
+                            imageVector = Icons.Outlined.AttachFile,
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.width(Spacing.Small))

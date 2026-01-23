@@ -7,7 +7,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
+import androidx.compose.material.icons.automirrored.outlined.Login
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.ExitToApp
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Login
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,12 +40,12 @@ fun AttendanceScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Attendance") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Navigate back"
                         )
                     }
@@ -98,9 +108,9 @@ fun AttendanceScreen(
                         ) {
                             Icon(
                                 imageVector = if (uiState.isPunchedIn)
-                                    Icons.Default.CheckCircle
+                                    Icons.Outlined.CheckCircle
                                 else
-                                    Icons.Default.AccessTime,
+                                    Icons.Outlined.AccessTime,
                                 contentDescription = null,
                                 tint = if (uiState.isPunchedIn) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(28.dp)
@@ -120,9 +130,6 @@ fun AttendanceScreen(
                             MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
                         else
                             MaterialTheme.colorScheme.surface
-                    ),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 2.dp
                     )
                 ) {
                     Column(
@@ -150,9 +157,9 @@ fun AttendanceScreen(
                             }
                             Icon(
                                 imageVector = if (uiState.isPunchedIn)
-                                    Icons.Default.CheckCircle
+                                    Icons.Outlined.CheckCircle
                                 else
-                                    Icons.Default.AccessTime,
+                                    Icons.Outlined.AccessTime,
                                 contentDescription = null,
                                 tint = if (uiState.isPunchedIn)
                                     MaterialTheme.colorScheme.primary
@@ -186,7 +193,7 @@ fun AttendanceScreen(
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.ExitToApp,
+                                        imageVector = Icons.Outlined.ExitToApp,
                                         contentDescription = null
                                     )
                                     Spacer(modifier = Modifier.width(Spacing.ExtraSmall))
@@ -204,7 +211,7 @@ fun AttendanceScreen(
                                     )
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Login,
+                                        imageVector = Icons.Outlined.Login,
                                         contentDescription = null
                                     )
                                     Spacer(modifier = Modifier.width(Spacing.ExtraSmall))
@@ -226,9 +233,6 @@ fun AttendanceScreen(
                             MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                         else
                             MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
-                    ),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 2.dp
                     )
                 ) {
                     Row(
@@ -251,7 +255,7 @@ fun AttendanceScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.LocationOn,
+                                imageVector = Icons.Outlined.LocationOn,
                                 contentDescription = null,
                                 tint = if (uiState.gpsEnabled)
                                     MaterialTheme.colorScheme.secondary
@@ -277,7 +281,7 @@ fun AttendanceScreen(
                         }
                         if (uiState.gpsEnabled) {
                             Icon(
-                                imageVector = Icons.Default.CheckCircle,
+                                imageVector = Icons.Outlined.CheckCircle,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.secondary
                             )
@@ -306,10 +310,7 @@ fun AttendanceScreen(
 fun ModernAttendanceHistoryItem(record: AttendanceRecord) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
-        )
+        shape = RoundedCornerShape(16.dp)
     ) {
         Row(
             modifier = Modifier
@@ -330,7 +331,7 @@ fun ModernAttendanceHistoryItem(record: AttendanceRecord) {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.CalendarToday,
+                        imageVector = Icons.Outlined.CalendarToday,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)

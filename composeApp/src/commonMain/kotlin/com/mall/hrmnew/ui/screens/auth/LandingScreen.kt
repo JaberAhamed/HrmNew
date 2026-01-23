@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Work
+import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,7 +47,7 @@ fun LandingScreen(
                 Spacer(modifier = Modifier.weight(1f))
 
                 androidx.compose.material3.Icon(
-                    imageVector = Icons.Default.Work,
+                    imageVector = Icons.Outlined.Work,
                     contentDescription = "HRM Logo",
                     modifier = Modifier.size(140.dp),
                     tint = MaterialTheme.colorScheme.onPrimary

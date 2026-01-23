@@ -11,6 +11,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.*
@@ -157,7 +159,7 @@ fun LoginScreen(
                     email = it
                 },
                 prefix = {
-                    Icon(imageVector = Icons.Default.Mail, contentDescription = "Mail icon")
+                    Icon(imageVector = Icons.Outlined.Mail, contentDescription = "Mail icon")
                 },
                 placeholder = {
                     Text(text = "Email")
@@ -185,7 +187,7 @@ fun LoginScreen(
                     password = it
                 },
                 prefix = {
-                    Icon(imageVector = Icons.Default.Lock, contentDescription = "Lock icon")
+                    Icon(imageVector = Icons.Outlined.Lock, contentDescription = "Lock icon")
                 },
                 placeholder = {
                     Text(text = "Password")

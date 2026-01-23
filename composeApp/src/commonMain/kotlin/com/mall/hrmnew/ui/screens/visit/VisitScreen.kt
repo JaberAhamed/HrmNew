@@ -7,7 +7,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.AttachFile
+import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,12 +50,12 @@ fun VisitScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Client Visits") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Navigate back"
                         )
                     }
@@ -103,7 +112,7 @@ fun VisitScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Place,
+                                imageVector = Icons.Outlined.Place,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(28.dp)
@@ -126,21 +135,21 @@ fun VisitScreen(
                     ModernVisitStatCard(
                         label = "Total",
                         count = totalVisits,
-                        icon = Icons.Default.Place,
+                        icon = Icons.Outlined.Place,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.primary
                     )
                     ModernVisitStatCard(
                         label = "Completed",
                         count = completedVisits,
-                        icon = Icons.Default.CheckCircle,
+                        icon = Icons.Outlined.CheckCircle,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.secondary
                     )
                     ModernVisitStatCard(
                         label = "Pending",
                         count = scheduledVisits,
-                        icon = Icons.Default.Schedule,
+                        icon = Icons.Outlined.Schedule,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.tertiary
                     )
@@ -157,7 +166,7 @@ fun VisitScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        imageVector = Icons.Outlined.Add,
                         contentDescription = null
                     )
                     Spacer(modifier = Modifier.width(Spacing.Small))
@@ -215,9 +224,6 @@ fun ModernVisitStatCard(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = color.copy(alpha = 0.1f)
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
         )
     ) {
         Column(
@@ -260,10 +266,7 @@ fun ModernVisitItem(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
-        )
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier.padding(Spacing.Medium)
@@ -291,7 +294,7 @@ fun ModernVisitItem(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Place,
+                            imageVector = Icons.Outlined.Place,
                             contentDescription = null,
                             tint = when (visit.status) {
                                 "Completed" -> MaterialTheme.colorScheme.primary
@@ -380,7 +383,7 @@ fun ModernAddVisitDialog(
                         fontWeight = FontWeight.Bold
                     )
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
+                        Icon(Icons.Outlined.Close, contentDescription = "Close")
                     }
                 }
 
@@ -445,7 +448,7 @@ fun ModernAddVisitDialog(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.CameraAlt,
+                        imageVector = Icons.Outlined.CameraAlt,
                         contentDescription = null
                     )
                     Spacer(modifier = Modifier.width(Spacing.Small))
@@ -461,7 +464,7 @@ fun ModernAddVisitDialog(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.AttachFile,
+                        imageVector = Icons.Outlined.AttachFile,
                         contentDescription = null
                     )
                     Spacer(modifier = Modifier.width(Spacing.Small))

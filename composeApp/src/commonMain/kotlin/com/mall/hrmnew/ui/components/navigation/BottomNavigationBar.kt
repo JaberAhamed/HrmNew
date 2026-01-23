@@ -137,6 +137,10 @@ fun DrawerMenuItem(
             onScreenSelected(screen)
             onDrawerClose()
         },
+        colors = NavigationDrawerItemDefaults.colors(
+            selectedContainerColor = MaterialTheme.colorScheme.primary,
+
+        ),
         modifier = Modifier.padding(horizontal = Spacing.Small)
     )
 }
@@ -238,6 +242,9 @@ fun NavDrawerScaffold(
                                 drawerState.close()
                             }
                         },
+                        colors = NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = MaterialTheme.colorScheme.secondary.copy(0.3f)
+                        ),
                         modifier = Modifier.padding(horizontal = Spacing.Small)
                     )
                 }

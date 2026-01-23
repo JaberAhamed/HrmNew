@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -70,7 +73,7 @@ fun LocationPermissionScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.LocationOn,
+                                imageVector = Icons.Outlined.LocationOn,
                                 contentDescription = "Location Icon",
                                 tint = Color(0xFF20B2AA),
                                 modifier = Modifier.size(36.dp)
@@ -107,7 +110,7 @@ fun LocationPermissionScreen(
                 FeatureItem(
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.Send,
+                            imageVector = Icons.Outlined.Send,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)
@@ -121,7 +124,7 @@ fun LocationPermissionScreen(
                 FeatureItem(
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.LocationOn,
+                            imageVector = Icons.Outlined.LocationOn,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)

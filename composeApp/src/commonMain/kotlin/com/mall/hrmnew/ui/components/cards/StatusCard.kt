@@ -41,8 +41,7 @@ fun StatusCard(
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        )
     ) {
         Row(
             modifier = Modifier

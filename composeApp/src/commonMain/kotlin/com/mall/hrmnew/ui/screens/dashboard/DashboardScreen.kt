@@ -7,6 +7,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.ChevronRight
+import androidx.compose.material.icons.outlined.Event
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.Task
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.mall.hrmnew.ui.theme.LocalAppColor
 import com.mall.hrmnew.ui.theme.Spacing
 import com.mall.hrmnew.viewmodel.dashboard.DashboardViewModel
 
@@ -32,7 +41,7 @@ fun DashboardScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Dashboard") },
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
@@ -101,7 +110,7 @@ fun DashboardScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Person,
+                                imageVector = Icons.Outlined.Person,
                                 contentDescription = null,
                                 tint = Color.White,
                                 modifier = Modifier.size(30.dp)
@@ -139,14 +148,14 @@ fun DashboardScreen(
                     ModernInfoCard(
                         title = "Leave Balance",
                         value = "${uiState.leaveBalance} days",
-                        icon = Icons.Default.Event,
+                        icon = Icons.Outlined.Event,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
                     ModernInfoCard(
                         title = "Pending Tasks",
                         value = "${uiState.pendingTasks}",
-                        icon = Icons.Default.Task,
+                        icon = Icons.Outlined.Task,
                         color = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.weight(1f)
                     )
@@ -161,15 +170,15 @@ fun DashboardScreen(
                     ModernInfoCard(
                         title = "Total Visits",
                         value = "${uiState.totalVisits}",
-                        icon = Icons.Default.Place,
+                        icon = Icons.Outlined.Place,
                         color = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.weight(1f)
                     )
                     ModernInfoCard(
                         title = "Notifications",
                         value = "${uiState.unreadNotifications}",
-                        icon = Icons.Default.Notifications,
-                        color = Color(0xFFE91E63),
+                        icon = Icons.Outlined.Notifications,
+                        color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -192,20 +201,20 @@ fun DashboardScreen(
                     ModernQuickActionCard(
                         title = "Apply Leave",
                         description = "Submit a leave request",
-                        icon = Icons.Default.Event,
-                        color = MaterialTheme.colorScheme.primary
+                        icon = Icons.Outlined.Event,
+                        color = LocalAppColor.current.green
                     )
                     ModernQuickActionCard(
                         title = "View Tasks",
                         description = "Check your assigned tasks",
-                        icon = Icons.Default.Task,
-                        color = MaterialTheme.colorScheme.secondary
+                        icon = Icons.Outlined.Task,
+                        color = MaterialTheme.colorScheme.primary
                     )
                     ModernQuickActionCard(
                         title = "Client Visits",
                         description = "Manage client visits",
-                        icon = Icons.Default.Place,
-                        color = MaterialTheme.colorScheme.tertiary
+                        icon = Icons.Outlined.Place,
+                        color = LocalAppColor.current.orange
                     )
                 }
             }
@@ -229,9 +238,7 @@ fun AttendanceStatusCard(
             else
                 MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        )
+
     ) {
         Column(
             modifier = Modifier.padding(Spacing.Large)
@@ -257,7 +264,7 @@ fun AttendanceStatusCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = if (isPunchedIn) Icons.Default.CheckCircle else Icons.Default.AccessTime,
+                            imageVector = if (isPunchedIn) Icons.Outlined.CheckCircle else Icons.Outlined.AccessTime,
                             contentDescription = null,
                             tint = if (isPunchedIn)
                                 Color.White
@@ -325,9 +332,7 @@ fun ModernInfoCard(
         colors = CardDefaults.cardColors(
             containerColor = color.copy(alpha = 0.1f)
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
-        )
+
     ) {
         Column(
             modifier = Modifier.padding(Spacing.Medium),
@@ -372,10 +377,7 @@ fun ModernQuickActionCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
-        )
+        shape = RoundedCornerShape(16.dp)
     ) {
         Row(
             modifier = Modifier
@@ -415,7 +417,7 @@ fun ModernQuickActionCard(
                 )
             }
             Icon(
-                imageVector = Icons.Default.ChevronRight,
+                imageVector = Icons.Outlined.ChevronRight,
                 contentDescription = null,
                 tint = color
             )

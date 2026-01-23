@@ -7,7 +7,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Event
+import androidx.compose.material.icons.outlined.MoneyOff
+import androidx.compose.material.icons.outlined.Sick
+import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,12 +44,12 @@ fun LeaveScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Leave Management") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Navigate back"
                         )
                     }
@@ -98,7 +106,7 @@ fun LeaveScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Event,
+                                imageVector = Icons.Outlined.Event,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(28.dp)
@@ -125,14 +133,14 @@ fun LeaveScreen(
                     ModernLeaveBalanceCard(
                         title = "Annual",
                         balance = "${uiState.annualLeaveBalance} days",
-                        icon = Icons.Default.Event,
+                        icon = Icons.Outlined.Event,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.primary
                     )
                     ModernLeaveBalanceCard(
                         title = "Sick",
                         balance = "${uiState.sickLeaveBalance} days",
-                        icon = Icons.Default.Sick,
+                        icon = Icons.Outlined.Sick,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.secondary
                     )
@@ -147,14 +155,14 @@ fun LeaveScreen(
                     ModernLeaveBalanceCard(
                         title = "Casual",
                         balance = "${uiState.casualLeaveBalance} days",
-                        icon = Icons.Default.WbSunny,
+                        icon = Icons.Outlined.WbSunny,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.tertiary
                     )
                     ModernLeaveBalanceCard(
                         title = "Unpaid",
                         balance = "Unlimited",
-                        icon = Icons.Default.MoneyOff,
+                        icon = Icons.Outlined.MoneyOff,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.error
                     )
@@ -171,7 +179,7 @@ fun LeaveScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        imageVector = Icons.Outlined.Add,
                         contentDescription = null
                     )
                     Spacer(modifier = Modifier.width(Spacing.Small))
@@ -220,9 +228,6 @@ fun ModernLeaveBalanceCard(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = color.copy(alpha = 0.1f)
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
         )
     ) {
         Column(
@@ -265,10 +270,7 @@ fun ModernLeaveHistoryItem(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
-        )
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier.padding(Spacing.Medium)
@@ -298,10 +300,10 @@ fun ModernLeaveHistoryItem(
                     ) {
                         Icon(
                             imageVector = when (leave.type) {
-                                "Annual" -> Icons.Default.Event
-                                "Sick" -> Icons.Default.Sick
-                                "Casual" -> Icons.Default.WbSunny
-                                else -> Icons.Default.MoneyOff
+                                "Annual" -> Icons.Outlined.Event
+                                "Sick" -> Icons.Outlined.Sick
+                                "Casual" -> Icons.Outlined.WbSunny
+                                else -> Icons.Outlined.MoneyOff
                             },
                             contentDescription = null,
                             tint = when (leave.status) {
@@ -385,7 +387,7 @@ fun ModernApplyLeaveDialog(
                         fontWeight = FontWeight.Bold
                     )
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
+                        Icon(Icons.Outlined.Close, contentDescription = "Close")
                     }
                 }
 

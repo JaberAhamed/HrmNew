@@ -17,7 +17,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Sync
+import androidx.compose.material.icons.outlined.Task
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -62,12 +68,12 @@ fun TaskScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Tasks") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.Outlined.ArrowBack,
                             contentDescription = "Navigate back"
                         )
                     }
@@ -124,7 +130,7 @@ fun TaskScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Task,
+                                imageVector = Icons.Outlined.Task,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(28.dp)
@@ -227,21 +233,21 @@ fun TaskScreen(
                     ModernTaskStatCard(
                         label = "Pending",
                         count = pendingCount,
-                        icon = Icons.Default.AccessTime,
+                        icon = Icons.Outlined.AccessTime,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.weight(1f)
                     )
                     ModernTaskStatCard(
                         label = "In Progress",
                         count = inProgressCount,
-                        icon = Icons.Default.Sync,
+                        icon = Icons.Outlined.Sync,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
                     ModernTaskStatCard(
                         label = "Completed",
                         count = completedCount,
-                        icon = Icons.Default.CheckCircle,
+                        icon = Icons.Outlined.CheckCircle,
                         color = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.weight(1f)
                     )
@@ -292,9 +298,6 @@ fun ModernTaskStatCard(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = color.copy(alpha = 0.1f)
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 1.dp
         )
     ) {
         Column(
@@ -346,9 +349,6 @@ fun ModernTaskItem(
                 "Medium" -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                 else -> MaterialTheme.colorScheme.surface
             }
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
         )
     ) {
         Column(
