@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -14,81 +15,147 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalGraphicsContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 import com.mall.hrmnew.model.domain.Announcement
-import com.mall.hrmnew.navigation.Screen
-import com.mall.hrmnew.ui.components.navigation.BottomNavScaffold
 import com.mall.hrmnew.ui.theme.Spacing
 import com.mall.hrmnew.viewmodel.announcement.AnnouncementViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnnouncementScreen(
     viewModel: AnnouncementViewModel,
-    onTabSelected: (Screen) -> Unit
+    onBackClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var selectedAnnouncement by remember { mutableStateOf<Announcement?>(null) }
+    var selectedFilter by remember { mutableStateOf("All") }
 
-    BottomNavScaffold(
-        currentScreen = Screen.Announcement,
-        onTabSelected = onTabSelected
-    ) { modifier ->
+
+    val filteredAnnouncements = remember(selectedFilter, uiState.announcements) {
+        when (selectedFilter) {
+            "Unread" -> uiState.announcements.filter { !it.isRead }
+            "Important" -> uiState.announcements.filter { it.priority == "High" }
+            else -> uiState.announcements
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Announcements") },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Navigate back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
+    ) { topBarPadding ->
         LazyColumn(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
+                .padding(topBarPadding)
                 .padding(Spacing.Medium),
             contentPadding = PaddingValues(bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             item {
-                // Header
-                Row(
+                // Header Card
+                Card(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                    )
                 ) {
-                    Text(
-                        text = "Announcements",
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                    Text(
-                        text = "${uiState.announcements.size} total",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Spacing.Large),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Announcements",
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
+                            Text(
+                                text = "${filteredAnnouncements.size} total",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Notifications,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                    }
                 }
             }
 
             // Filter Chips
             item {
-                val selectedFilter by remember { mutableStateOf("All") }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
                 ) {
                     FilterChip(
                         selected = selectedFilter == "All",
-                        onClick = { },
-                        label = { Text("All") }
+                        onClick = { selectedFilter = "All" },
+                        label = { Text("All") },
+                        shape = RoundedCornerShape(12.dp)
                     )
                     FilterChip(
                         selected = selectedFilter == "Unread",
-                        onClick = { },
-                        label = { Text("Unread") }
+                        onClick = { selectedFilter = "Unread" },
+                        label = { Text("Unread") },
+                        shape = RoundedCornerShape(12.dp)
                     )
                     FilterChip(
                         selected = selectedFilter == "Important",
-                        onClick = { },
-                        label = { Text("Important") }
+                        onClick = { selectedFilter = "Important" },
+                        label = { Text("Important") },
+                        shape = RoundedCornerShape(12.dp)
                     )
                 }
             }
 
+            // Announcements List Header
+            item {
+                Text(
+                    text = "All Announcements",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
             // Announcements List
-            if (uiState.announcements.isEmpty()) {
+            if (filteredAnnouncements.isEmpty()) {
                 item {
                     com.mall.hrmnew.ui.components.common.EmptyState(
                         message = "No announcements",
@@ -96,8 +163,8 @@ fun AnnouncementScreen(
                     )
                 }
             } else {
-                items(uiState.announcements) { announcement ->
-                    AnnouncementItem(
+                items(filteredAnnouncements) { announcement ->
+                    ModernAnnouncementItem(
                         announcement = announcement,
                         onClick = {
                             selectedAnnouncement = announcement
@@ -109,7 +176,7 @@ fun AnnouncementScreen(
         }
 
         selectedAnnouncement?.let { announcement ->
-            AnnouncementDetailDialog(
+            ModernAnnouncementDetailDialog(
                 announcement = announcement,
                 onDismiss = { selectedAnnouncement = null }
             )
@@ -118,7 +185,7 @@ fun AnnouncementScreen(
 }
 
 @Composable
-fun AnnouncementItem(
+fun ModernAnnouncementItem(
     announcement: Announcement,
     onClick: () -> Unit
 ) {
@@ -126,11 +193,15 @@ fun AnnouncementItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (!announcement.isRead)
                 MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
             else
                 MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 1.dp
         )
     ) {
         Row(
@@ -144,13 +215,13 @@ fun AnnouncementItem(
             Box(
                 modifier = Modifier
                     .size(48.dp)
+                    .clip(CircleShape)
                     .background(
                         color = when (announcement.priority) {
-                            "High" -> MaterialTheme.colorScheme.errorContainer
-                            "Medium" -> MaterialTheme.colorScheme.secondaryContainer
-                            else -> MaterialTheme.colorScheme.tertiaryContainer
-                        },
-                        shape = CircleShape
+                            "High" -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
+                            "Medium" -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                            else -> MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f)
+                        }
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -166,7 +237,8 @@ fun AnnouncementItem(
                         "High" -> MaterialTheme.colorScheme.error
                         "Medium" -> MaterialTheme.colorScheme.secondary
                         else -> MaterialTheme.colorScheme.tertiary
-                    }
+                    },
+                    modifier = Modifier.size(24.dp)
                 )
             }
 
@@ -180,6 +252,7 @@ fun AnnouncementItem(
                     Text(
                         text = announcement.title,
                         style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -218,12 +291,13 @@ fun AnnouncementItem(
                             "Medium" -> MaterialTheme.colorScheme.secondary
                             else -> MaterialTheme.colorScheme.surfaceVariant
                         },
-                        shape = MaterialTheme.shapes.small
+                        shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
                             text = announcement.priority,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                            style = MaterialTheme.typography.labelSmall
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }
@@ -233,16 +307,17 @@ fun AnnouncementItem(
 }
 
 @Composable
-fun AnnouncementDetailDialog(
+fun ModernAnnouncementDetailDialog(
     announcement: Announcement,
     onDismiss: () -> Unit
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Card(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp)
         ) {
             Column(
-                modifier = Modifier.padding(Spacing.Medium)
+                modifier = Modifier.padding(Spacing.Large)
             ) {
                 // Header
                 Row(
@@ -250,34 +325,34 @@ fun AnnouncementDetailDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Surface(
-                        color = when (announcement.priority) {
-                            "High" -> MaterialTheme.colorScheme.errorContainer
-                            "Medium" -> MaterialTheme.colorScheme.secondaryContainer
-                            else -> MaterialTheme.colorScheme.tertiaryContainer
-                        },
-                        shape = CircleShape,
-                        modifier = Modifier.size(48.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = when (announcement.category) {
-                                    "HR" -> Icons.Default.People
-                                    "Company" -> Icons.Default.Business
-                                    "Event" -> Icons.Default.Event
-                                    else -> Icons.Default.Notifications
-                                },
-                                contentDescription = null,
-                                tint = when (announcement.priority) {
-                                    "High" -> MaterialTheme.colorScheme.error
-                                    "Medium" -> MaterialTheme.colorScheme.secondary
-                                    else -> MaterialTheme.colorScheme.tertiary
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(
+                                when (announcement.priority) {
+                                    "High" -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
+                                    "Medium" -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                                    else -> MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f)
                                 }
-                            )
-                        }
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = when (announcement.category) {
+                                "HR" -> Icons.Default.People
+                                "Company" -> Icons.Default.Business
+                                "Event" -> Icons.Default.Event
+                                else -> Icons.Default.Notifications
+                            },
+                            contentDescription = null,
+                            tint = when (announcement.priority) {
+                                "High" -> MaterialTheme.colorScheme.error
+                                "Medium" -> MaterialTheme.colorScheme.secondary
+                                else -> MaterialTheme.colorScheme.tertiary
+                            },
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
 
                     IconButton(onClick = onDismiss) {
@@ -293,7 +368,8 @@ fun AnnouncementDetailDialog(
                 // Title
                 Text(
                     text = announcement.title,
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.Small))
@@ -306,12 +382,13 @@ fun AnnouncementDetailDialog(
                 ) {
                     Surface(
                         color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = MaterialTheme.shapes.small
+                        shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
                             text = announcement.category,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelSmall
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Medium
                         )
                     }
 
@@ -341,7 +418,8 @@ fun AnnouncementDetailDialog(
 
                     OutlinedButton(
                         onClick = { },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.AttachFile,
@@ -356,9 +434,12 @@ fun AnnouncementDetailDialog(
 
                 Button(
                     onClick = onDismiss,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Close")
+                    Text("Close", style = MaterialTheme.typography.labelLarge)
                 }
             }
         }

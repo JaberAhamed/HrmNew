@@ -3,6 +3,7 @@ package com.mall.hrmnew.ui.screens.dashboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -12,52 +13,102 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mall.hrmnew.navigation.Screen
-import com.mall.hrmnew.ui.components.navigation.BottomNavScaffold
-import com.mall.hrmnew.ui.components.cards.InfoCard
 import com.mall.hrmnew.ui.theme.Spacing
 import com.mall.hrmnew.viewmodel.dashboard.DashboardViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     viewModel: DashboardViewModel,
-    onTabSelected: (Screen) -> Unit
+    onMenuClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    BottomNavScaffold(
-        currentScreen = Screen.Dashboard,
-        onTabSelected = onTabSelected
-    ) { modifier ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Dashboard") },
+                navigationIcon = {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Open navigation drawer"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
+    ) { topBarPadding ->
         LazyColumn(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
+                .padding(topBarPadding)
                 .padding(Spacing.Medium),
             contentPadding = PaddingValues(bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             item {
-                // Header
-                Column {
-                    Text(
-                        text = "Welcome back!",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                // Welcome Header
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
                     )
-                    Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
-                    Text(
-                        text = uiState.userName,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Spacing.Large),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Welcome back!",
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
+                            Text(
+                                text = uiState.userName,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(CircleShape)
+                                .background(
+                                    brush = Brush.linearGradient(
+                                        colors = listOf(
+                                            Color(0xFF3498DB),
+                                            Color(0xFF20B2AA)
+                                        )
+                                    )
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                    }
                 }
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(Spacing.Small))
             }
 
             // Attendance Status Card
@@ -75,6 +126,7 @@ fun DashboardScreen(
                 Text(
                     text = "Overview",
                     style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(horizontal = Spacing.Small)
                 )
             }
@@ -84,16 +136,18 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
                 ) {
-                    InfoCard(
+                    ModernInfoCard(
                         title = "Leave Balance",
                         value = "${uiState.leaveBalance} days",
                         icon = Icons.Default.Event,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
-                    InfoCard(
+                    ModernInfoCard(
                         title = "Pending Tasks",
                         value = "${uiState.pendingTasks}",
                         icon = Icons.Default.Task,
+                        color = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -104,16 +158,18 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
                 ) {
-                    InfoCard(
+                    ModernInfoCard(
                         title = "Total Visits",
                         value = "${uiState.totalVisits}",
                         icon = Icons.Default.Place,
+                        color = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.weight(1f)
                     )
-                    InfoCard(
+                    ModernInfoCard(
                         title = "Notifications",
                         value = "${uiState.unreadNotifications}",
                         icon = Icons.Default.Notifications,
+                        color = Color(0xFFE91E63),
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -124,6 +180,7 @@ fun DashboardScreen(
                 Text(
                     text = "Quick Actions",
                     style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(horizontal = Spacing.Small)
                 )
             }
@@ -132,19 +189,19 @@ fun DashboardScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Spacing.Small)
                 ) {
-                    QuickActionCard(
+                    ModernQuickActionCard(
                         title = "Apply Leave",
                         description = "Submit a leave request",
                         icon = Icons.Default.Event,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    QuickActionCard(
+                    ModernQuickActionCard(
                         title = "View Tasks",
                         description = "Check your assigned tasks",
                         icon = Icons.Default.Task,
                         color = MaterialTheme.colorScheme.secondary
                     )
-                    QuickActionCard(
+                    ModernQuickActionCard(
                         title = "Client Visits",
                         description = "Manage client visits",
                         icon = Icons.Default.Place,
@@ -165,16 +222,19 @@ fun AttendanceStatusCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (isPunchedIn)
-                MaterialTheme.colorScheme.primaryContainer
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
             else
                 MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
         )
     ) {
         Column(
-            modifier = Modifier.padding(Spacing.Medium)
+            modifier = Modifier.padding(Spacing.Large)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -184,18 +244,32 @@ fun AttendanceStatusCard(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = if (isPunchedIn) Icons.Default.CheckCircle else Icons.Default.AccessTime,
-                        contentDescription = null,
-                        tint = if (isPunchedIn)
-                            MaterialTheme.colorScheme.primary
-                        else
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.width(Spacing.Small))
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (isPunchedIn)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    MaterialTheme.colorScheme.surfaceVariant
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = if (isPunchedIn) Icons.Default.CheckCircle else Icons.Default.AccessTime,
+                            contentDescription = null,
+                            tint = if (isPunchedIn)
+                                Color.White
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(Spacing.Medium))
                     Text(
                         text = if (isPunchedIn) "Punched In" else "Not Punched In",
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
                 if (lastPunchTime != null) {
@@ -212,19 +286,25 @@ fun AttendanceStatusCard(
             if (isPunchedIn) {
                 OutlinedButton(
                     onClick = onPunchOut,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Punch Out")
+                    Text("Punch Out", style = MaterialTheme.typography.labelLarge)
                 }
             } else {
                 Button(
                     onClick = onPunchIn,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    Text("Punch In")
+                    Text("Punch In", style = MaterialTheme.typography.labelLarge)
                 }
             }
         }
@@ -232,7 +312,59 @@ fun AttendanceStatusCard(
 }
 
 @Composable
-fun QuickActionCard(
+fun ModernInfoCard(
+    title: String,
+    value: String,
+    icon: ImageVector,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = color.copy(alpha = 0.1f)
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 1.dp
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(Spacing.Medium),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(Spacing.Small))
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = color
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+fun ModernQuickActionCard(
     title: String,
     description: String,
     icon: ImageVector,
@@ -240,29 +372,41 @@ fun QuickActionCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 1.dp
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = color.copy(alpha = 0.1f),
-                    shape = MaterialTheme.shapes.medium
+                    color = color.copy(alpha = 0.08f),
+                    shape = RoundedCornerShape(16.dp)
                 )
                 .padding(Spacing.Medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = color,
-                modifier = Modifier.size(32.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
             Spacer(modifier = Modifier.width(Spacing.Medium))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = description,

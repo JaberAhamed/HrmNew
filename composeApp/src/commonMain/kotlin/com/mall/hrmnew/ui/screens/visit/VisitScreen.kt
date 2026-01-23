@@ -1,8 +1,11 @@
 package com.mall.hrmnew.ui.screens.visit
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -14,53 +17,99 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 import com.mall.hrmnew.model.domain.Visit
-import com.mall.hrmnew.navigation.Screen
-import com.mall.hrmnew.ui.components.navigation.BottomNavScaffold
 import com.mall.hrmnew.ui.components.buttons.PrimaryButton
 import com.mall.hrmnew.ui.components.buttons.SecondaryButton
 import com.mall.hrmnew.ui.theme.Spacing
 import com.mall.hrmnew.viewmodel.visit.VisitViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VisitScreen(
     viewModel: VisitViewModel,
-    onTabSelected: (Screen) -> Unit
+    onBackClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAddVisitDialog by remember { mutableStateOf(false) }
 
-    BottomNavScaffold(
-        currentScreen = Screen.Visit,
-        onTabSelected = onTabSelected
-    ) { modifier ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Client Visits") },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Navigate back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
+    ) { topBarPadding ->
         LazyColumn(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
+                .padding(topBarPadding)
                 .padding(Spacing.Medium),
             contentPadding = PaddingValues(bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             item {
-                // Header
-                Row(
+                // Header Card
+                Card(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                    )
                 ) {
-                    Text(
-                        text = "Client Visits",
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                    Text(
-                        text = "${uiState.visits.size} visits",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Spacing.Large),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Client Visits",
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
+                            Text(
+                                text = "${uiState.visits.size} visits",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Place,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                    }
                 }
             }
 
@@ -74,21 +123,21 @@ fun VisitScreen(
                     val completedVisits = uiState.visits.count { it.status == "Completed" }
                     val scheduledVisits = uiState.visits.count { it.status == "Scheduled" }
 
-                    VisitStatCard(
+                    ModernVisitStatCard(
                         label = "Total",
                         count = totalVisits,
                         icon = Icons.Default.Place,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.primary
                     )
-                    VisitStatCard(
+                    ModernVisitStatCard(
                         label = "Completed",
                         count = completedVisits,
                         icon = Icons.Default.CheckCircle,
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.secondary
                     )
-                    VisitStatCard(
+                    ModernVisitStatCard(
                         label = "Pending",
                         count = scheduledVisits,
                         icon = Icons.Default.Schedule,
@@ -100,17 +149,28 @@ fun VisitScreen(
 
             // Add Visit Button
             item {
-                PrimaryButton(
-                    text = "Add New Visit",
-                    onClick = { showAddVisitDialog = true }
-                )
+                Button(
+                    onClick = { showAddVisitDialog = true },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(Spacing.Small))
+                    Text("Add New Visit", style = MaterialTheme.typography.labelLarge)
+                }
             }
 
-            // Visits List
+            // Visits List Header
             item {
                 Text(
                     text = "Recent Visits",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
 
@@ -123,7 +183,7 @@ fun VisitScreen(
                 }
             } else {
                 items(uiState.visits) { visit ->
-                    VisitItem(
+                    ModernVisitItem(
                         visit = visit
                     )
                 }
@@ -131,7 +191,7 @@ fun VisitScreen(
         }
 
         if (showAddVisitDialog) {
-            AddVisitDialog(
+            ModernAddVisitDialog(
                 onDismiss = { showAddVisitDialog = false },
                 onSubmit = { client, purpose, address, date, notes ->
                     viewModel.addVisit(client, purpose, address, date, notes)
@@ -143,7 +203,7 @@ fun VisitScreen(
 }
 
 @Composable
-fun VisitStatCard(
+fun ModernVisitStatCard(
     label: String,
     count: Int,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
@@ -152,41 +212,58 @@ fun VisitStatCard(
 ) {
     Card(
         modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = color.copy(alpha = 0.1f)
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 1.dp
         )
     ) {
         Column(
             modifier = Modifier.padding(Spacing.Small),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = color,
-                modifier = Modifier.size(20.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
             Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
             Text(
                 text = "$count",
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
                 color = color
             )
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = color
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
 
 @Composable
-fun VisitItem(
+fun ModernVisitItem(
     visit: Visit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 1.dp
+        )
     ) {
         Column(
             modifier = Modifier.padding(Spacing.Medium)
@@ -196,30 +273,61 @@ fun VisitItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = visit.clientName,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = visit.purpose,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = visit.address,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = "Scheduled: ${visit.scheduledDate}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(
+                                when (visit.status) {
+                                    "Completed" -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+                                    "Scheduled" -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                                    else -> MaterialTheme.colorScheme.surfaceVariant
+                                }
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Place,
+                            contentDescription = null,
+                            tint = when (visit.status) {
+                                "Completed" -> MaterialTheme.colorScheme.primary
+                                "Scheduled" -> MaterialTheme.colorScheme.secondary
+                                else -> MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(Spacing.Small))
+                    Column {
+                        Text(
+                            text = visit.clientName,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = visit.purpose,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = visit.address,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "Scheduled: ${visit.scheduledDate}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
 
                 Surface(
@@ -228,22 +336,22 @@ fun VisitItem(
                         "Scheduled" -> MaterialTheme.colorScheme.secondaryContainer
                         else -> MaterialTheme.colorScheme.surfaceVariant
                     },
-                    shape = MaterialTheme.shapes.small
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = visit.status,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelSmall
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
-
         }
     }
 }
 
 @Composable
-fun AddVisitDialog(
+fun ModernAddVisitDialog(
     onDismiss: () -> Unit,
     onSubmit: (client: String, purpose: String, address: String, date: String, notes: String) -> Unit
 ) {
@@ -255,15 +363,26 @@ fun AddVisitDialog(
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp)
         ) {
             Column(
-                modifier = Modifier.padding(Spacing.Medium)
+                modifier = Modifier.padding(Spacing.Large)
             ) {
-                Text(
-                    text = "Add New Visit",
-                    style = MaterialTheme.typography.titleLarge
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Add New Visit",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Default.Close, contentDescription = "Close")
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(Spacing.Medium))
 
@@ -271,7 +390,8 @@ fun AddVisitDialog(
                     value = clientName,
                     onValueChange = { clientName = it },
                     label = { Text("Client Name") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.Small))
@@ -280,7 +400,8 @@ fun AddVisitDialog(
                     value = purpose,
                     onValueChange = { purpose = it },
                     label = { Text("Purpose") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.Small))
@@ -289,7 +410,8 @@ fun AddVisitDialog(
                     value = address,
                     onValueChange = { address = it },
                     label = { Text("Address") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.Small))
@@ -298,7 +420,8 @@ fun AddVisitDialog(
                     value = scheduledDate,
                     onValueChange = { scheduledDate = it },
                     label = { Text("Scheduled Date (YYYY-MM-DD)") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.Small))
@@ -309,7 +432,8 @@ fun AddVisitDialog(
                     label = { Text("Notes") },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 3,
-                    maxLines = 5
+                    maxLines = 5,
+                    shape = RoundedCornerShape(12.dp)
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.Small))
@@ -317,7 +441,8 @@ fun AddVisitDialog(
                 // Placeholder for photo capture
                 OutlinedButton(
                     onClick = { },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.CameraAlt,
@@ -332,7 +457,8 @@ fun AddVisitDialog(
                 // Placeholder for document
                 OutlinedButton(
                     onClick = { },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.AttachFile,
@@ -348,18 +474,26 @@ fun AddVisitDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
                 ) {
-                    SecondaryButton(
-                        text = "Cancel",
+                    OutlinedButton(
                         onClick = onDismiss,
-                        modifier = Modifier.weight(1f)
-                    )
-                    PrimaryButton(
-                        text = "Submit",
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("Cancel")
+                    }
+                    Button(
                         onClick = {
                             onSubmit(clientName, purpose, address, scheduledDate, notes)
                         },
-                        modifier = Modifier.weight(1f)
-                    )
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("Submit")
+                    }
                 }
             }
         }

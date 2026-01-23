@@ -1,6 +1,8 @@
 package com.mall.hrmnew.ui.screens.task
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,19 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,12 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 import com.mall.hrmnew.model.domain.Task
-import com.mall.hrmnew.navigation.Screen
-import com.mall.hrmnew.ui.components.navigation.BottomNavScaffold
 import com.mall.hrmnew.ui.theme.Spacing
 import com.mall.hrmnew.viewmodel.task.TaskViewModel
 
@@ -46,7 +40,7 @@ import com.mall.hrmnew.viewmodel.task.TaskViewModel
 @Composable
 fun TaskScreen(
     viewModel: TaskViewModel,
-    onTabSelected: (Screen) -> Unit
+    onBackClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var selectedFilter by remember { mutableStateOf("All") }
@@ -66,33 +60,77 @@ fun TaskScreen(
         }
     }
 
-    BottomNavScaffold(
-        currentScreen = Screen.Task,
-        onTabSelected = onTabSelected
-    ) { modifier ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Tasks") },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Navigate back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
+    ) { topBarPadding ->
         LazyColumn(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
+                .padding(topBarPadding)
                 .padding(Spacing.Medium),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             item {
                 // Header
-                Row(
+                Card(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                    )
                 ) {
-                    Text(
-                        text = "Tasks",
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                    Text(
-                        text = "${filteredTasks.size} tasks",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Spacing.Large),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "My Tasks",
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
+                            Text(
+                                text = "${filteredTasks.size} tasks",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Task,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                    }
                 }
             }
 
@@ -119,7 +157,8 @@ fun TaskScreen(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .menuAnchor()
+                                .menuAnchor(),
+                            shape = RoundedCornerShape(12.dp)
                         )
                         ExposedDropdownMenu(
                             expanded = priorityExpanded,
@@ -154,7 +193,8 @@ fun TaskScreen(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .menuAnchor()
+                                .menuAnchor(),
+                            shape = RoundedCornerShape(12.dp)
                         )
                         ExposedDropdownMenu(
                             expanded = statusExpanded,
@@ -184,25 +224,37 @@ fun TaskScreen(
                     val inProgressCount = uiState.tasks.count { it.status == "In Progress" }
                     val completedCount = uiState.tasks.count { it.status == "Completed" }
 
-                    TaskStatCard(
+                    ModernTaskStatCard(
                         label = "Pending",
                         count = pendingCount,
+                        icon = Icons.Default.AccessTime,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.weight(1f)
                     )
-                    TaskStatCard(
+                    ModernTaskStatCard(
                         label = "In Progress",
                         count = inProgressCount,
+                        icon = Icons.Default.Sync,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
-                    TaskStatCard(
+                    ModernTaskStatCard(
                         label = "Completed",
                         count = completedCount,
-                        color = MaterialTheme.colorScheme.primary,
+                        icon = Icons.Default.CheckCircle,
+                        color = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.weight(1f)
                     )
                 }
+            }
+
+            // Section Title
+            item {
+                Text(
+                    text = "Task List",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
 
             // Tasks List
@@ -215,7 +267,7 @@ fun TaskScreen(
                 }
             } else {
                 items(filteredTasks) { task ->
-                    TaskItem(
+                    ModernTaskItem(
                         task = task,
                         onStatusChange = { newStatus ->
                             viewModel.updateTaskStatus(task.id, newStatus)
@@ -228,31 +280,52 @@ fun TaskScreen(
 }
 
 @Composable
-fun TaskStatCard(
+fun ModernTaskStatCard(
     label: String,
     count: Int,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     color: androidx.compose.ui.graphics.Color,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = color.copy(alpha = 0.1f)
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 1.dp
         )
     ) {
         Column(
             modifier = Modifier.padding(Spacing.Small),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
             Text(
                 text = "$count",
                 style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
                 color = color
             )
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = color
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -260,18 +333,22 @@ fun TaskStatCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskItem(
+fun ModernTaskItem(
     task: Task,
     onStatusChange: (String) -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = when (task.priority) {
                 "High" -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
                 "Medium" -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                 else -> MaterialTheme.colorScheme.surface
             }
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
         )
     ) {
         Column(
@@ -286,6 +363,7 @@ fun TaskItem(
                     Text(
                         text = task.title,
                         style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -310,24 +388,20 @@ fun TaskItem(
                         "Medium" -> MaterialTheme.colorScheme.secondary
                         else -> MaterialTheme.colorScheme.surfaceVariant
                     },
-                    shape = MaterialTheme.shapes.small
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = task.priority,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
-                        color = when (task.priority) {
-                            "High" -> MaterialTheme.colorScheme.onErrorContainer
-                            "Medium" -> MaterialTheme.colorScheme.onSecondaryContainer
-                            else -> MaterialTheme.colorScheme.onSurfaceVariant
-                        }
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(Spacing.Small))
 
-            // Status
+            // Status Dropdown
             var statusExpanded by remember { mutableStateOf(false) }
             ExposedDropdownMenuBox(
                 expanded = statusExpanded,
@@ -343,7 +417,8 @@ fun TaskItem(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .menuAnchor()
+                        .menuAnchor(),
+                    shape = RoundedCornerShape(12.dp)
                 )
                 ExposedDropdownMenu(
                     expanded = statusExpanded,

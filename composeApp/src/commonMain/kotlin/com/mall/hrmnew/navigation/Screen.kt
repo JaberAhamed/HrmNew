@@ -5,6 +5,7 @@ sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Landing : Screen("landing")
     object Login : Screen("login")
+    object LocationPermission : Screen("location_permission")
 
     // Main Tab Screens
     object Dashboard : Screen("dashboard")
@@ -19,7 +20,8 @@ sealed class Screen(val route: String) {
 val authScreens = listOf(
     Screen.Splash,
     Screen.Landing,
-    Screen.Login
+    Screen.Login,
+    Screen.LocationPermission
 )
 
 val mainScreens = listOf(
