@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
 import com.mall.hrmnew.navigation.Screen
 import com.mall.hrmnew.navigation.rememberNavigationManager
+import com.mall.hrmnew.ui.appinterface.AppExit
 import com.mall.hrmnew.ui.components.navigation.NavDrawerScaffold
 import com.mall.hrmnew.ui.screens.announcement.AnnouncementScreen
 import com.mall.hrmnew.ui.screens.attendance.AttendanceScreen
@@ -30,7 +31,7 @@ import com.mall.hrmnew.viewmodel.task.TaskViewModel
 import com.mall.hrmnew.viewmodel.visit.VisitViewModel
 
 @Composable
-fun App() {
+fun App(appExit: AppExit) {
     AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -49,7 +50,7 @@ fun App() {
                     is Screen.Splash -> {
                         SplashScreen(
                             onNavigateToLanding = {
-                                navManager.navigate(Screen.Login)
+                                navManager.navigate(Screen.LocationPermission)
                             }
                         )
                     }
@@ -65,7 +66,21 @@ fun App() {
                         LoginScreen(
                             onLoginSuccess = {
                                 userLoggedIn = true
-                                navManager.navigate(Screen.LocationPermission)
+                                navManager.navigate(Screen.Dashboard)
+                            }
+                        )
+                    }
+                    is Screen.LocationPermission -> {
+                        LocationPermissionScreen(
+                            onAllowLocation = {
+                                locationPermissionGranted = true
+                                navManager.navigateAndClearBackStack(Screen.Login)
+                            },
+                            onExitApp = {
+                                // Exit app - reset to login screen
+                                userLoggedIn = false
+                                appExit.exit()
+
                             }
                         )
                     }
@@ -73,36 +88,7 @@ fun App() {
                         // Should not happen in auth flow
                         SplashScreen(
                             onNavigateToLanding = {
-                                navManager.navigate(Screen.Landing)
-                            }
-                        )
-                    }
-                }
-            } else if (!locationPermissionGranted) {
-                // Location Permission Flow
-                when (currentScreen) {
-                    is Screen.LocationPermission -> {
-                        LocationPermissionScreen(
-                            onAllowLocation = {
-                                locationPermissionGranted = true
-                                navManager.navigateAndClearBackStack(Screen.Dashboard)
-                            },
-                            onExitApp = {
-                                // Exit app - reset to login screen
-                                userLoggedIn = false
-                                navManager.navigateAndClearBackStack(Screen.Login)
-                            }
-                        )
-                    }
-                    else -> {
-                        LocationPermissionScreen(
-                            onAllowLocation = {
-                                locationPermissionGranted = true
-                                navManager.navigateAndClearBackStack(Screen.Dashboard)
-                            },
-                            onExitApp = {
-                                userLoggedIn = false
-                                navManager.navigateAndClearBackStack(Screen.Login)
+                                navManager.navigate(Screen.LocationPermission)
                             }
                         )
                     }
