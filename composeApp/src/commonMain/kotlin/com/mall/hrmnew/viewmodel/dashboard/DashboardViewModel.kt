@@ -15,18 +15,23 @@ class DashboardViewModel : ViewModel() {
 
     fun punchIn() {
         viewModelScope.launch {
+            val currentTime = getCurrentTimestamp()
             _uiState.value = _uiState.value.copy(
                 isPunchedIn = true,
-                lastPunchTime = getCurrentTimestamp()
+                lastPunchTime = currentTime,
+                punchInTime = currentTime,
+                punchOutTime = null
             )
         }
     }
 
     fun punchOut() {
         viewModelScope.launch {
+            val currentTime = getCurrentTimestamp()
             _uiState.value = _uiState.value.copy(
                 isPunchedIn = false,
-                lastPunchTime = null
+                lastPunchTime = currentTime,
+                punchOutTime = currentTime
             )
         }
     }

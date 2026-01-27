@@ -4,6 +4,8 @@ data class DashboardUiState(
     val userName: String = "John Doe",
     val isPunchedIn: Boolean = false,
     val lastPunchTime: String? = null,
+    val punchInTime: String? = null,
+    val punchOutTime: String? = null,
     val leaveBalance: Int = 15,
     val pendingTasks: Int = 5,
     val totalVisits: Int = 12,

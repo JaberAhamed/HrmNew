@@ -77,47 +77,51 @@ fun DashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(topBarPadding)
-                .padding(Spacing.Medium),
+                .padding(bottom =Spacing.Large),
             contentPadding = PaddingValues(bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             item {
-                // Welcome Header
+                // Punch Times Card
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = Spacing.Medium),
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                        containerColor = Color.Unspecified
                     )
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(Spacing.Large),
-                        verticalAlignment = Alignment.CenterVertically
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
+                        // Punch In Time
+                        PunchTimeItem(
+                            icon = Icons.Outlined.AccessTime,
+                            label = "Punch In",
+                            time = uiState.punchInTime ?: "--:--",
+                            color = LocalAppColor.current.green
+                        )
 
+                        // Vertical Divider
                         Box(
                             modifier = Modifier
-                                .size(60.dp)
-                                .clip(CircleShape)
+                                .width(1.dp)
+                                .height(60.dp)
                                 .background(
-                                    brush = Brush.linearGradient(
-                                        colors = listOf(
-                                            Color(0xFF3498DB),
-                                            Color(0xFF20B2AA)
-                                        )
-                                    )
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Person,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+                                )
+                        )
+
+                        // Punch Out Time
+                        PunchTimeItem(
+                            icon = Icons.Outlined.CheckCircle,
+                            label = "Punch Out",
+                            time = uiState.punchOutTime ?: "--:--",
+                            color = MaterialTheme.colorScheme.error
+                        )
                     }
                 }
             }
@@ -138,7 +142,7 @@ fun DashboardScreen(
                     text = "Overview",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = Spacing.Small)
+                    modifier = Modifier.padding(horizontal = Spacing.Medium)
                 )
             }
 
@@ -146,7 +150,7 @@ fun DashboardScreen(
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
-                    contentPadding = PaddingValues(horizontal = Spacing.Small)
+                    contentPadding = PaddingValues(horizontal = Spacing.Medium)
                 ) {
                     item {
                         ModernInfoCard(
@@ -154,7 +158,7 @@ fun DashboardScreen(
                             value = "${uiState.leaveBalance} days",
                             icon = Icons.Outlined.Event,
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.width(160.dp)
+                            modifier = Modifier.width(180.dp)
                         )
                     }
                     item {
@@ -163,7 +167,7 @@ fun DashboardScreen(
                             value = "${uiState.pendingTasks}",
                             icon = Icons.Outlined.Task,
                             color = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.width(160.dp)
+                            modifier = Modifier.width(180.dp)
                         )
                     }
                     item {
@@ -172,7 +176,7 @@ fun DashboardScreen(
                             value = "${uiState.totalVisits}",
                             icon = Icons.Outlined.Place,
                             color = MaterialTheme.colorScheme.tertiary,
-                            modifier = Modifier.width(160.dp)
+                            modifier = Modifier.width(180.dp)
                         )
                     }
                     item {
@@ -181,7 +185,7 @@ fun DashboardScreen(
                             value = "${uiState.unreadNotifications}",
                             icon = Icons.Outlined.Notifications,
                             color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.width(160.dp)
+                            modifier = Modifier.width(180.dp)
                         )
                     }
                 }
@@ -193,7 +197,7 @@ fun DashboardScreen(
                     text = "Quick Actions",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = Spacing.Small)
+                    modifier = Modifier.padding(horizontal = Spacing.Medium)
                 )
             }
 
@@ -256,7 +260,7 @@ fun AttendanceStatusCard(
     )
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(24.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.Medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Status Header
@@ -310,7 +314,6 @@ fun AttendanceStatusCard(
 //            )
 //        }
 
-        Spacer(modifier = Modifier.height(20.dp))
 
         // Circular Progress Button
         Crossfade(
@@ -337,7 +340,7 @@ fun AttendanceStatusCard(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+
 
         // Instruction text
 //        Text(
@@ -571,7 +574,7 @@ fun ModernQuickActionCard(
     color: Color
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.Medium),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(
@@ -617,5 +620,45 @@ fun ModernQuickActionCard(
                 tint = color
             )
         }
+    }
+}
+
+@Composable
+fun PunchTimeItem(
+    icon: ImageVector,
+    label: String,
+    time: String,
+    color: Color
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Spacing.Small)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(50.dp)
+                .clip(CircleShape)
+                .background(color.copy(alpha = 0.2f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = time,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 12.sp,
+            color = color
+        )
     }
 }
