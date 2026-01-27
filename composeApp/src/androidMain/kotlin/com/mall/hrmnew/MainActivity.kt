@@ -6,15 +6,23 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.mall.hrmnew.permissions.LocationPermissionController
 import com.mall.hrmnew.ui.appinterface.AppExit
 
 class MainActivity : ComponentActivity() {
+    private lateinit var locationPermissionController: LocationPermissionController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        locationPermissionController = LocationPermissionController()
+        locationPermissionController.initializeLaunchers(this)
+        LocationPermissionController.setCurrentActivity(this)
+
         val appExit = AndroidAppExit(this)
         setContent {
-            App(appExit = appExit)
+            App(appExit = appExit, permissionController = locationPermissionController)
         }
     }
 }
@@ -28,6 +36,6 @@ class PreviewAppExit : AppExit {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-
-    App(appExit = PreviewAppExit())
+    val permissionController = LocationPermissionController()
+    App(appExit = PreviewAppExit(), permissionController = permissionController)
 }

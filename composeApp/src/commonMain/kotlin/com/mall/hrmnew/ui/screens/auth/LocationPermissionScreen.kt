@@ -8,11 +8,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,13 +23,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.mall.hrmnew.permissions.LocationPermissionController
 import com.mall.hrmnew.ui.theme.Spacing
 
 @Composable
 fun LocationPermissionScreen(
+    permissionController: LocationPermissionController,
     onAllowLocation: () -> Unit,
     onExitApp: () -> Unit
 ) {
+    val foregroundGranted by permissionController.foregroundLocationGranted
+    val backgroundGranted by permissionController.backgroundLocationGranted
+    val bothGranted = foregroundGranted && backgroundGranted
+
+    // Automatically request permissions when screen is displayed
+    LaunchedEffect(Unit) {
+        permissionController.refreshPermissionStatus()
+
+        // Request foreground permission first
+        permissionController.requestForegroundLocationPermission { fgGranted ->
+            if (fgGranted) {
+                // Then request background permission
+                permissionController.requestBackgroundLocationPermission { }
+            }
+        }
+    }
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -135,7 +155,7 @@ fun LocationPermissionScreen(
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                // Enable Location Button
+                // Continue Button - enabled only when both permissions are granted
                 Button(
                     onClick = onAllowLocation,
                     modifier = Modifier
@@ -144,10 +164,11 @@ fun LocationPermissionScreen(
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF20B2AA)
-                    )
+                    ),
+                    enabled = bothGranted
                 ) {
                     Text(
-                        text = "Enable Location Access",
+                        text = if (bothGranted) "Continue" else "Waiting for permissions...",
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -189,7 +210,7 @@ private fun FeatureItem(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
+        shadowElevation = 0.dp
     ) {
         Row(
             modifier = Modifier

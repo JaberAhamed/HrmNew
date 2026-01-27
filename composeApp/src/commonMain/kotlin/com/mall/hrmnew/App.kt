@@ -29,9 +29,10 @@ import com.mall.hrmnew.viewmodel.dashboard.DashboardViewModel
 import com.mall.hrmnew.viewmodel.leave.LeaveViewModel
 import com.mall.hrmnew.viewmodel.task.TaskViewModel
 import com.mall.hrmnew.viewmodel.visit.VisitViewModel
+import com.mall.hrmnew.permissions.LocationPermissionController
 
 @Composable
-fun App(appExit: AppExit) {
+fun App(appExit: AppExit, permissionController: LocationPermissionController) {
     AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -72,6 +73,7 @@ fun App(appExit: AppExit) {
                     }
                     is Screen.LocationPermission -> {
                         LocationPermissionScreen(
+                            permissionController = permissionController,
                             onAllowLocation = {
                                 locationPermissionGranted = true
                                 navManager.navigateAndClearBackStack(Screen.Login)
