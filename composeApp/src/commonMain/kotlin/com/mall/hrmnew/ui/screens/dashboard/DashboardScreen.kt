@@ -3,10 +3,10 @@ package com.mall.hrmnew.ui.screens.dashboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ChevronRight
@@ -96,20 +96,7 @@ fun DashboardScreen(
                             .padding(Spacing.Large),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = "Welcome back!",
-                                style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
-                            Text(
-                                text = uiState.userName,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+
                         Box(
                             modifier = Modifier
                                 .size(60.dp)
@@ -156,46 +143,47 @@ fun DashboardScreen(
             }
 
             item {
-                Row(
+                LazyRow(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
+                    contentPadding = PaddingValues(horizontal = Spacing.Small)
                 ) {
-                    ModernInfoCard(
-                        title = "Leave Balance",
-                        value = "${uiState.leaveBalance} days",
-                        icon = Icons.Outlined.Event,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ModernInfoCard(
-                        title = "Pending Tasks",
-                        value = "${uiState.pendingTasks}",
-                        icon = Icons.Outlined.Task,
-                        color = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
-                ) {
-                    ModernInfoCard(
-                        title = "Total Visits",
-                        value = "${uiState.totalVisits}",
-                        icon = Icons.Outlined.Place,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ModernInfoCard(
-                        title = "Notifications",
-                        value = "${uiState.unreadNotifications}",
-                        icon = Icons.Outlined.Notifications,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.weight(1f)
-                    )
+                    item {
+                        ModernInfoCard(
+                            title = "Leave Balance",
+                            value = "${uiState.leaveBalance} days",
+                            icon = Icons.Outlined.Event,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.width(160.dp)
+                        )
+                    }
+                    item {
+                        ModernInfoCard(
+                            title = "Pending Tasks",
+                            value = "${uiState.pendingTasks}",
+                            icon = Icons.Outlined.Task,
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.width(160.dp)
+                        )
+                    }
+                    item {
+                        ModernInfoCard(
+                            title = "Total Visits",
+                            value = "${uiState.totalVisits}",
+                            icon = Icons.Outlined.Place,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.width(160.dp)
+                        )
+                    }
+                    item {
+                        ModernInfoCard(
+                            title = "Notifications",
+                            value = "${uiState.unreadNotifications}",
+                            icon = Icons.Outlined.Notifications,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.width(160.dp)
+                        )
+                    }
                 }
             }
 
@@ -267,103 +255,97 @@ fun AttendanceStatusCard(
         label = "cardColor"
     )
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = cardColor)
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Status Header
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Crossfade(
-                        targetState = isPunchedIn,
-                        animationSpec = tween(500, easing = FastOutSlowInEasing),
-                        label = "statusText"
-                    ) { punchedIn ->
-                        Text(
-                            text = if (punchedIn) "Punched In" else "Not Punched In",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = if (punchedIn)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.onSurface
-                        )
-                    }
+        // Status Header
+//        Row(
+//            modifier = Modifier.fillMaxWidth(),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            Column {
+//                Crossfade(
+//                    targetState = isPunchedIn,
+//                    animationSpec = tween(500, easing = FastOutSlowInEasing),
+//                    label = "statusText"
+//                ) { punchedIn ->
+//                    Text(
+//                        text = if (punchedIn) "Punched In" else "Not Punched In",
+//                        style = MaterialTheme.typography.titleMedium,
+//                        fontWeight = FontWeight.Bold,
+//                        color = if (punchedIn)
+//                            MaterialTheme.colorScheme.primary
+//                        else
+//                            MaterialTheme.colorScheme.onSurface
+//                    )
+//                }
+//
+//                if (lastPunchTime != null) {
+//                    Spacer(modifier = Modifier.height(4.dp))
+//                    Text(
+//                        text = lastPunchTime,
+//                        style = MaterialTheme.typography.bodySmall,
+//                        color = MaterialTheme.colorScheme.onSurfaceVariant
+//                    )
+//                }
+//            }
+//
+//            // Status indicator dot
+//            Box(
+//                modifier = Modifier
+//                    .size(12.dp)
+//                    .clip(CircleShape)
+//                    .background(
+//                        if (isPunchedIn)
+//                            MaterialTheme.colorScheme.primary
+//                        else
+//                            MaterialTheme.colorScheme.onSurfaceVariant
+//                    )
+//                    .graphicsLayer {
+//                        scaleX = statusPulseScale
+//                        scaleY = statusPulseScale
+//                    }
+//            )
+//        }
 
-                    if (lastPunchTime != null) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = lastPunchTime,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+        Spacer(modifier = Modifier.height(20.dp))
 
-                // Status indicator dot
-                Box(
-                    modifier = Modifier
-                        .size(12.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (isPunchedIn)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        .graphicsLayer {
-                            scaleX = statusPulseScale
-                            scaleY = statusPulseScale
-                        }
+        // Circular Progress Button
+        Crossfade(
+            targetState = isPunchedIn,
+            animationSpec = tween(500, easing = FastOutSlowInEasing),
+            label = "buttonSwitch"
+        ) { punchedIn ->
+            if (punchedIn) {
+                CircularProgressPunchButton(
+                    text = "Punch Out",
+                    icon = Icons.Outlined.CheckCircle,
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    progressColor = MaterialTheme.colorScheme.error,
+                    onComplete = onPunchOut
+                )
+            } else {
+                CircularProgressPunchButton(
+                    text = "Punch In",
+                    icon = Icons.Outlined.AccessTime,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    progressColor = MaterialTheme.colorScheme.primary,
+                    onComplete = onPunchIn
                 )
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Circular Progress Button
-            Crossfade(
-                targetState = isPunchedIn,
-                animationSpec = tween(500, easing = FastOutSlowInEasing),
-                label = "buttonSwitch"
-            ) { punchedIn ->
-                if (punchedIn) {
-                    CircularProgressPunchButton(
-                        text = "Punch Out",
-                        icon = Icons.Outlined.CheckCircle,
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        progressColor = MaterialTheme.colorScheme.error,
-                        onComplete = onPunchOut
-                    )
-                } else {
-                    CircularProgressPunchButton(
-                        text = "Punch In",
-                        icon = Icons.Outlined.AccessTime,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        progressColor = MaterialTheme.colorScheme.primary,
-                        onComplete = onPunchIn
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Instruction text
-            Text(
-                text = "Hold to confirm",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Instruction text
+//        Text(
+//            text = "Hold to confirm",
+//            style = MaterialTheme.typography.bodySmall,
+//            color = MaterialTheme.colorScheme.onSurfaceVariant,
+//            textAlign = TextAlign.Center
+//        )
     }
 }
 
