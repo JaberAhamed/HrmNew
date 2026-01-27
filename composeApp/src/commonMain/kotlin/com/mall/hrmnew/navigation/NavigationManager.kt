@@ -73,6 +73,7 @@ private val NavigationManagerSaver: Saver<NavigationManager, *> = listSaver(
                 Screen.Task.route -> Screen.Task
                 Screen.Visit.route -> Screen.Visit
                 Screen.Announcement.route -> Screen.Announcement
+                Screen.Other.route -> Screen.Other
                 else -> Screen.Splash
             }
         }

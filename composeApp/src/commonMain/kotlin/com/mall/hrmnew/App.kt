@@ -3,14 +3,12 @@ package com.mall.hrmnew
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import kotlinx.coroutines.launch
 import com.mall.hrmnew.navigation.Screen
 import com.mall.hrmnew.navigation.rememberNavigationManager
 import com.mall.hrmnew.ui.appinterface.AppExit
-import com.mall.hrmnew.ui.components.navigation.NavDrawerScaffold
+import com.mall.hrmnew.ui.components.navigation.CenteredBottomNavScaffold
 import com.mall.hrmnew.ui.screens.announcement.AnnouncementScreen
 import com.mall.hrmnew.ui.screens.attendance.AttendanceScreen
 import com.mall.hrmnew.ui.screens.auth.LandingScreen
@@ -19,6 +17,7 @@ import com.mall.hrmnew.ui.screens.auth.LoginScreen
 import com.mall.hrmnew.ui.screens.auth.SplashScreen
 import com.mall.hrmnew.ui.screens.dashboard.DashboardScreen
 import com.mall.hrmnew.ui.screens.leave.LeaveScreen
+import com.mall.hrmnew.ui.screens.other.OtherScreen
 import com.mall.hrmnew.ui.screens.task.TaskScreen
 import com.mall.hrmnew.ui.screens.visit.VisitScreen
 import com.mall.hrmnew.ui.theme.AppTheme
@@ -106,25 +105,19 @@ fun App(appExit: AppExit, permissionController: LocationPermissionController) {
 @Composable
 fun MainApp(navManager: com.mall.hrmnew.navigation.NavigationManager) {
     val currentScreen = navManager.currentDestination
-    val drawerState = rememberDrawerState(initialValue = androidx.compose.material3.DrawerValue.Closed)
-    val coroutineScope = rememberCoroutineScope()
 
-    NavDrawerScaffold(
+    CenteredBottomNavScaffold(
         currentScreen = currentScreen,
-        onScreenSelected = { screen ->
+        onTabSelected = { screen ->
             navManager.navigate(screen)
-        },
-        drawerState = drawerState
-    ) {
+        }
+    ) { paddingValues ->
         // Show content based on current screen
         when (currentScreen) {
             is Screen.Dashboard -> {
                 val viewModel = remember { DashboardViewModel() }
                 DashboardScreen(
-                    viewModel = viewModel,
-                    onMenuClick = {
-                        coroutineScope.launch { drawerState.open() }
-                    }
+                    viewModel = viewModel
                 )
             }
             is Screen.Attendance -> {
@@ -159,6 +152,17 @@ fun MainApp(navManager: com.mall.hrmnew.navigation.NavigationManager) {
                 val viewModel = remember { AnnouncementViewModel() }
                 AnnouncementScreen(
                     viewModel = viewModel,
+                    onBackClick = { navManager.navigateUp() }
+                )
+            }
+            is Screen.Other -> {
+                OtherScreen(
+                    onNavigateToTask = {
+                        navManager.navigate(Screen.Task)
+                    },
+                    onNavigateToAnnouncement = {
+                        navManager.navigate(Screen.Announcement)
+                    },
                     onBackClick = { navManager.navigateUp() }
                 )
             }
