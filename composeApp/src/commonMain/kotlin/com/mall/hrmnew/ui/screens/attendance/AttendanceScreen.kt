@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -25,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.mall.hrmnew.model.domain.AttendanceRecord
 import com.mall.hrmnew.ui.theme.Spacing
 import com.mall.hrmnew.viewmodel.attendance.AttendanceViewModel
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
@@ -65,8 +63,8 @@ fun AttendanceScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(topBarPadding)
-                .padding(Spacing.Medium),
-            contentPadding = PaddingValues(bottom = 80.dp),
+                .padding(horizontal = Spacing.Medium),
+            contentPadding = PaddingValues(bottom = 100.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             // Attendance Calendar
@@ -178,7 +176,7 @@ fun AttendanceCalendar(
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(top = Spacing.Medium),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface

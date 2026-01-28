@@ -65,7 +65,13 @@ fun DashboardScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Dashboard") },
+                title = { Column {
+                    Text(
+                        text = "JohnDoe - 1234433 - Present",
+                        fontSize = 16.sp
+                    )
+                  //  Text("JohnDoe - 1234jd433 - Present")
+                } },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     titleContentColor = MaterialTheme.colorScheme.onSurface
@@ -85,6 +91,7 @@ fun DashboardScreen(
                 // Punch Times Card
                 Card(
                     modifier = Modifier.fillMaxWidth()
+                        .padding(top = Spacing.Medium)
                         .padding(horizontal = Spacing.Medium),
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(

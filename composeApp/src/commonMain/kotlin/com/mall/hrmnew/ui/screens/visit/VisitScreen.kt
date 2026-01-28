@@ -75,7 +75,7 @@ fun VisitScreen(
                 .fillMaxSize()
                 .padding(topBarPadding)
                 .padding(horizontal = Spacing.Medium),
-            contentPadding = PaddingValues(bottom = 80.dp),
+            contentPadding = PaddingValues(bottom = 100.dp),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
 
