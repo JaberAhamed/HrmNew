@@ -67,6 +67,7 @@ private val NavigationManagerSaver: Saver<NavigationManager, *> = listSaver(
                 Screen.Splash.route -> Screen.Splash
                 Screen.Landing.route -> Screen.Landing
                 Screen.Login.route -> Screen.Login
+                Screen.LocationPermission.route -> Screen.LocationPermission
                 Screen.Dashboard.route -> Screen.Dashboard
                 Screen.Attendance.route -> Screen.Attendance
                 Screen.Leave.route -> Screen.Leave
