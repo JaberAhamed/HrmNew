@@ -42,7 +42,7 @@ class ApiService(
         deviceId: String,
         password: String
     ): Result<LoginResponse> = safeApiCall {
-        client.post("$baseUrl/app-login") {
+        client.post("$baseUrl/v1/login") {
             contentType(ContentType.Application.FormUrlEncoded)
             header("Device-Id", deviceId)
             setBody("email=$email&password=$password")

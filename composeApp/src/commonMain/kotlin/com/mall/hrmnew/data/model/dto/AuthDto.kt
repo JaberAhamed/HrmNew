@@ -33,14 +33,30 @@ data class LoginRequest(
  */
 @Serializable
 data class LoginResponse(
-    @SerialName("id")
-    val id: Int? = null,
+    val success: Boolean,
+    val message: String,
+    @SerialName("status_code")
+    val statusCode: Int,
+    val data: LoginData? = null
+)
 
-    @SerialName("message")
-    val message: String? = null,
+@Serializable
+data class LoginData(
+    val user: User,
+    val token: String,
+    @SerialName("token_type")
+    val tokenType: String
+)
 
-    @SerialName("token")
-    val token: String? = null
+@Serializable
+data class User(
+    val id: Int,
+    @SerialName("employee_id")
+    val employeeId: Int? = null,
+    val name: String,
+    val email: String,
+    val type: String,
+    val avatar: String? = null
 )
 
 /**

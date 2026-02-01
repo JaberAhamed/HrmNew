@@ -40,6 +40,7 @@ class LoginViewModel(
         val passwordError = validatePassword(state.password)
 
         if (emailError != null || passwordError != null) {
+            println("LoginViewModel: Validation failed - emailError: $emailError, passwordError: $passwordError")
             _uiState.value = state.copy(
                 emailError = emailError,
                 passwordError = passwordError
@@ -47,6 +48,7 @@ class LoginViewModel(
             return
         }
 
+        println("LoginViewModel: Attempting login with email: ${state.email}, deviceId: ${getDeviceId()}")
         viewModelScope.launch {
             _uiState.value = state.copy(isLoading = true, generalError = null)
 
@@ -58,19 +60,34 @@ class LoginViewModel(
 
             result.fold(
                 onSuccess = { response ->
+                    println("LoginViewModel: Login successful - success: ${response.success}, message: ${response.message}")
+                    println("LoginViewModel: User data - ${response.data?.user?.name}, token: ${response.data?.token?.take(20)}...")
                     // Save token to shared preferences
-                    response.token?.let { token ->
-                        userSharedPreference.setToken(token)
+                    if (response.success){
+                        response.data?.token?.let { token ->
+                            userSharedPreference.setToken(token)
+                            println("LoginViewModel: Token saved to shared preferences")
+                        }
+
+                        _uiState.value = state.copy(
+                            isLoading = false,
+                            isLoggedIn = true
+                        )
+
+                        onSuccess()
+                    }else{
+                        println("LoginViewModel: Login failed - ${response.message}")
+                        _uiState.value = state.copy(
+                            isLoading = false,
+                            generalError = response.message ?: "Login failed. Please try again."
+                        )
+
                     }
 
-                    _uiState.value = state.copy(
-                        isLoading = false,
-                        isLoggedIn = true
-                    )
-
-                    onSuccess()
                 },
                 onFailure = { error ->
+                    println("LoginViewModel: Network error - ${error.message}")
+                    error.printStackTrace()
                     _uiState.value = state.copy(
                         isLoading = false,
                         generalError = error.message ?: "Login failed. Please try again."

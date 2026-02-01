@@ -198,40 +198,40 @@ fun DashboardScreen(
                 }
             }
 
-            // Quick Actions
-            item {
-                Text(
-                    text = "Quick Actions",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = Spacing.Medium)
-                )
-            }
-
-            item {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Spacing.Small)
-                ) {
-                    ModernQuickActionCard(
-                        title = "Apply Leave",
-                        description = "Submit a leave request",
-                        icon = Icons.Outlined.Event,
-                        color = LocalAppColor.current.green
-                    )
-                    ModernQuickActionCard(
-                        title = "View Tasks",
-                        description = "Check your assigned tasks",
-                        icon = Icons.Outlined.Task,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    ModernQuickActionCard(
-                        title = "Client Visits",
-                        description = "Manage client visits",
-                        icon = Icons.Outlined.Place,
-                        color = LocalAppColor.current.orange
-                    )
-                }
-            }
+//            // Quick Actions
+//            item {
+//                Text(
+//                    text = "Quick Actions",
+//                    style = MaterialTheme.typography.titleMedium,
+//                    fontWeight = FontWeight.SemiBold,
+//                    modifier = Modifier.padding(horizontal = Spacing.Medium)
+//                )
+//            }
+//
+//            item {
+//                Column(
+//                    verticalArrangement = Arrangement.spacedBy(Spacing.Small)
+//                ) {
+//                    ModernQuickActionCard(
+//                        title = "Apply Leave",
+//                        description = "Submit a leave request",
+//                        icon = Icons.Outlined.Event,
+//                        color = LocalAppColor.current.green
+//                    )
+//                    ModernQuickActionCard(
+//                        title = "View Tasks",
+//                        description = "Check your assigned tasks",
+//                        icon = Icons.Outlined.Task,
+//                        color = MaterialTheme.colorScheme.primary
+//                    )
+//                    ModernQuickActionCard(
+//                        title = "Client Visits",
+//                        description = "Manage client visits",
+//                        icon = Icons.Outlined.Place,
+//                        color = LocalAppColor.current.orange
+//                    )
+//                }
+//            }
         }
     }
 }

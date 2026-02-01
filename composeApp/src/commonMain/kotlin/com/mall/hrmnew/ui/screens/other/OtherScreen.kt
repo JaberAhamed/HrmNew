@@ -88,13 +88,13 @@ fun OtherScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Spacing.Small)
                 ) {
-                    OtherFeatureCard(
-                        title = "Tasks",
-                        description = "View and manage your assigned tasks",
-                        icon = Icons.Outlined.Task,
-                        color = MaterialTheme.colorScheme.primary,
-                        onClick = onNavigateToTask
-                    )
+//                    OtherFeatureCard(
+//                        title = "Tasks",
+//                        description = "View and manage your assigned tasks",
+//                        icon = Icons.Outlined.Task,
+//                        color = MaterialTheme.colorScheme.primary,
+//                        onClick = onNavigateToTask
+//                    )
                     OtherFeatureCard(
                         title = "Announcements",
                         description = "Stay updated with company announcements",

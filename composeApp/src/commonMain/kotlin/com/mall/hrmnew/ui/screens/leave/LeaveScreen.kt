@@ -125,22 +125,22 @@ fun LeaveScreen(
             }
 
             // Apply Leave Button
-            item {
-                Button(
-                    onClick = { showApplyDialog = true },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Add,
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.width(Spacing.Small))
-                    Text("Apply for Leave", style = MaterialTheme.typography.labelLarge)
-                }
-            }
+//            item {
+//                Button(
+//                    onClick = { showApplyDialog = true },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(52.dp),
+//                    shape = RoundedCornerShape(12.dp)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Outlined.Add,
+//                        contentDescription = null
+//                    )
+//                    Spacer(modifier = Modifier.width(Spacing.Small))
+//                    Text("Apply for Leave", style = MaterialTheme.typography.labelLarge)
+//                }
+//            }
 
             // Leave History
             item {
