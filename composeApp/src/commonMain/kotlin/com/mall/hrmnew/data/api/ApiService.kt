@@ -1,10 +1,12 @@
 package com.mall.hrmnew.data.api
 
+import com.mall.hrmnew.data.model.dto.LeaveBalanceResponse
 import com.mall.hrmnew.data.model.dto.LoginRequest
 import com.mall.hrmnew.data.model.dto.LoginResponse
 import com.mall.hrmnew.util.BaseUrlProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -47,6 +49,10 @@ class ApiService(
             header("Device-Id", deviceId)
             setBody("email=$email&password=$password")
         }.body()
+    }
+
+    suspend fun getLeaveBalance(): Result<LeaveBalanceResponse> = safeApiCall {
+        client.get("$baseUrl/v1/leave/balance").body()
     }
 
     private suspend inline fun <reified T> safeApiCall(

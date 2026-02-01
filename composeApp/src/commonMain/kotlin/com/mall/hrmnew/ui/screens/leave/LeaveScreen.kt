@@ -70,58 +70,34 @@ fun LeaveScreen(
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
 
-            // Leave Balance Cards
+            // Leave Totals Card
             item {
                 Text(
                     modifier = Modifier.padding(top = Spacing.Medium),
-                    text = "Leave Balance",
+                    text = "Leave Totals",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
             }
 
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
-                ) {
-                    ModernLeaveBalanceCard(
-                        title = "Annual",
-                        balance = "${uiState.annualLeaveBalance} days",
-                        icon = Icons.Outlined.Event,
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    ModernLeaveBalanceCard(
-                        title = "Sick",
-                        balance = "${uiState.sickLeaveBalance} days",
-                        icon = Icons.Outlined.Sick,
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.secondary
-                    )
+            if (uiState.leaveTotals != null) {
+                item {
+                    LeaveTotalsCard(totals = uiState.leaveTotals!!)
                 }
             }
 
+            // Leave Balance List
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
-                ) {
-                    ModernLeaveBalanceCard(
-                        title = "Casual",
-                        balance = "${uiState.casualLeaveBalance} days",
-                        icon = Icons.Outlined.WbSunny,
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.tertiary
-                    )
-                    ModernLeaveBalanceCard(
-                        title = "Unpaid",
-                        balance = "Unlimited",
-                        icon = Icons.Outlined.MoneyOff,
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
+                Text(
+                    modifier = Modifier.padding(top = Spacing.Medium),
+                    text = "Leave Balances",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            items(uiState.leaveBalances) { balance ->
+                LeaveBalanceItem(balance = balance)
             }
 
             // Apply Leave Button
@@ -441,5 +417,187 @@ fun ModernApplyLeaveDialog(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LeaveTotalsCard(totals: com.mall.hrmnew.data.model.dto.LeaveTotals) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(Spacing.Medium)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TotalItem(
+                    label = "Total Allocated",
+                    value = "${totals.totalAllocated} days",
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.primary
+                )
+                TotalItem(
+                    label = "Total Used",
+                    value = "${totals.totalUsed} days",
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
+            Spacer(modifier = Modifier.height(Spacing.Small))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TotalItem(
+                    label = "Total Remaining",
+                    value = "${totals.totalRemaining} days",
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+                TotalItem(
+                    label = "Carried Forward",
+                    value = "${totals.totalCarriedForward} days",
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun TotalItem(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    color: Color
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = color
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+fun LeaveBalanceItem(balance: com.mall.hrmnew.data.model.dto.LeaveBalance) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(Spacing.Medium)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Event,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(Spacing.Small))
+                    Column {
+                        Text(
+                            text = balance.leaveType.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = "Year: ${balance.year}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "${balance.remainingDays} days left",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(Spacing.Small))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                BalanceStatItem(
+                    label = "Allocated",
+                    value = "${balance.allocatedDays} days",
+                    modifier = Modifier.weight(1f)
+                )
+                BalanceStatItem(
+                    label = "Used",
+                    value = "${balance.usedDays} days",
+                    modifier = Modifier.weight(1f)
+                )
+                BalanceStatItem(
+                    label = "Carried Forward",
+                    value = "${balance.carriedForward} days",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BalanceStatItem(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }

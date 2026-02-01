@@ -78,7 +78,7 @@ object ApiClient {
 
                 val token = userSharedPreference.getToken()
                 if (token != null) {
-                    header("Authorization", token)
+                    header("Authorization", "Bearer $token")
                 }
             }
 

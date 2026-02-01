@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import com.mall.hrmnew.data.api.ApiService
 import com.mall.hrmnew.data.network.ApiClient
 import com.mall.hrmnew.data.repository.AuthRepository
+import com.mall.hrmnew.data.repository.LeaveRepository
 import com.mall.hrmnew.navigation.Screen
 import com.mall.hrmnew.navigation.rememberNavigationManager
 import com.mall.hrmnew.ui.appinterface.AppExit
@@ -53,8 +54,9 @@ fun App(
             var userLoggedIn by remember { mutableStateOf(false) }
             var locationPermissionGranted by remember { mutableStateOf(false) }
 
-            // Initialize dependencies for LoginViewModel
+            // Initialize dependencies for LoginViewModel and LeaveViewModel
             var loginViewModel by remember { mutableStateOf<LoginViewModel?>(null) }
+            var leaveViewModel by remember { mutableStateOf<LeaveViewModel?>(null) }
 
             // Initialize repository and viewmodel
             LaunchedEffect(Unit) {
@@ -62,6 +64,9 @@ fun App(
                 val authApiService = ApiService(httpClient)
                 val authRepository = AuthRepository(authApiService)
                 loginViewModel = LoginViewModel(authRepository, userSharedPreference)
+
+                val leaveRepository = LeaveRepository(authApiService)
+                leaveViewModel = LeaveViewModel(leaveRepository)
             }
 
             // Authentication Flow
@@ -164,7 +169,8 @@ fun App(
                 is Screen.Dashboard, is Screen.Attendance, is Screen.Leave,
                 is Screen.Task, is Screen.Visit, is Screen.Announcement, is Screen.Other -> {
                     // Main App Flow with Bottom Navigation
-                    MainApp(navManager = navManager)
+                    MainApp(navManager = navManager,
+                        leaveViewModel = leaveViewModel)
                 }
                 else -> {
                     // Should not happen
@@ -180,7 +186,7 @@ fun App(
 }
 
 @Composable
-fun MainApp(navManager: com.mall.hrmnew.navigation.NavigationManager) {
+fun MainApp(navManager: com.mall.hrmnew.navigation.NavigationManager, leaveViewModel: LeaveViewModel?) {
     val currentScreen = navManager.currentDestination
 
     CenteredBottomNavScaffold(
@@ -205,11 +211,12 @@ fun MainApp(navManager: com.mall.hrmnew.navigation.NavigationManager) {
                 )
             }
             is Screen.Leave -> {
-                val viewModel = remember { LeaveViewModel() }
-                LeaveScreen(
-                    viewModel = viewModel,
-                    onBackClick = { navManager.navigateUp() }
-                )
+                if (leaveViewModel != null) {
+                    LeaveScreen(
+                        viewModel = leaveViewModel!!,
+                        onBackClick = { navManager.navigateUp() }
+                    )
+                }
             }
             is Screen.Task -> {
                 val viewModel = remember { TaskViewModel() }
