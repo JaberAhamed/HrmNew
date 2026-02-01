@@ -5,6 +5,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.mall.hrmnew.data.api.ApiService
+import com.mall.hrmnew.data.network.ApiClient
+import com.mall.hrmnew.data.repository.AuthRepository
 import com.mall.hrmnew.navigation.Screen
 import com.mall.hrmnew.navigation.rememberNavigationManager
 import com.mall.hrmnew.ui.appinterface.AppExit
@@ -29,9 +32,14 @@ import com.mall.hrmnew.viewmodel.leave.LeaveViewModel
 import com.mall.hrmnew.viewmodel.task.TaskViewModel
 import com.mall.hrmnew.viewmodel.visit.VisitViewModel
 import com.mall.hrmnew.permissions.LocationPermissionController
+import com.mall.hrmnew.util.UserSharedPreference
 
 @Composable
-fun App(appExit: AppExit, permissionController: LocationPermissionController) {
+fun App(
+    appExit: AppExit,
+    permissionController: LocationPermissionController,
+    userSharedPreference: UserSharedPreference
+) {
     AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -43,6 +51,17 @@ fun App(appExit: AppExit, permissionController: LocationPermissionController) {
             // Track login and location permission state
             var userLoggedIn by remember { mutableStateOf(false) }
             var locationPermissionGranted by remember { mutableStateOf(false) }
+
+            // Initialize dependencies for LoginViewModel
+            var loginViewModel by remember { mutableStateOf<LoginViewModel?>(null) }
+
+            // Initialize repository and viewmodel
+            LaunchedEffect(Unit) {
+                val httpClient = ApiClient.getInstance(userSharedPreference)
+                val authApiService = ApiService(httpClient)
+                val authRepository = AuthRepository(authApiService)
+                loginViewModel = LoginViewModel(authRepository, userSharedPreference)
+            }
 
             // Authentication Flow
             if (!userLoggedIn) {
@@ -62,13 +81,23 @@ fun App(appExit: AppExit, permissionController: LocationPermissionController) {
                         )
                     }
                     is Screen.Login -> {
-                        val viewModel = remember { LoginViewModel() }
-                        LoginScreen(
-                            onLoginSuccess = {
-                                userLoggedIn = true
-                                navManager.navigate(Screen.Dashboard)
-                            }
-                        )
+                        if (loginViewModel != null) {
+                            LoginScreen(
+                                viewModel = loginViewModel!!,
+                                onLoginSuccess = {
+                                    userLoggedIn = true
+                                    navManager.navigate(Screen.Dashboard)
+                                }
+                            )
+                        } else {
+                            // Show loading while initializing
+                            SplashScreen(
+                                onNavigateToLanding = {
+                                    navManager.navigate(Screen.LocationPermission)
+                                }
+                            )
+                        }
+
                     }
                     is Screen.LocationPermission -> {
                         LocationPermissionScreen(

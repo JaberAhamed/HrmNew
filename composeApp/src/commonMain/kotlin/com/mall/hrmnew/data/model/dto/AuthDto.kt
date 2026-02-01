@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 /**
  * Data Transfer Object for login request
  * @property email User's email address
+ * @property playerId Unique player/device identifier
+ * @property deviceType Device type (e.g., "android", "ios")
  * @property password User's password
  */
 @Serializable
@@ -13,30 +15,32 @@ data class LoginRequest(
     @SerialName("email")
     val email: String,
 
+    @SerialName("player_id")
+    val playerId: String,
+
+    @SerialName("device_type")
+    val deviceType: String,
+
     @SerialName("password")
     val password: String
 )
 
 /**
  * Data Transfer Object for login response
- * @property token Authentication token (if returned by API)
- * @property userId User ID (if returned by API)
+ * @property id User ID (if returned by API)
  * @property message Response message
- * @property success Indicates if login was successful
+ * @property token Authentication token (if returned by API)
  */
 @Serializable
 data class LoginResponse(
-    @SerialName("token")
-    val token: String? = null,
-
-    @SerialName("user_id")
-    val userId: String? = null,
+    @SerialName("id")
+    val id: Int? = null,
 
     @SerialName("message")
     val message: String? = null,
 
-    @SerialName("success")
-    val success: Boolean? = null
+    @SerialName("token")
+    val token: String? = null
 )
 
 /**

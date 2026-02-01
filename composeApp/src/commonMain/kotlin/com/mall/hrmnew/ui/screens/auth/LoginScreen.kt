@@ -50,9 +50,9 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun LoginScreen(
+    viewModel: LoginViewModel,
     onLoginSuccess: () -> Unit
 ) {
-    val viewModel = remember { LoginViewModel() }
     val uiState by viewModel.uiState.collectAsState()
 
     var email by remember {
@@ -157,6 +157,7 @@ fun LoginScreen(
                 value = email,
                 onValueChange = {
                     email = it
+                    viewModel.onEmailChange(it.text)
                 },
                 prefix = {
                     Icon(imageVector = Icons.Outlined.Mail, contentDescription = "Mail icon")
@@ -165,6 +166,7 @@ fun LoginScreen(
                     Text(text = "Email")
                 },
                 shape = RoundedCornerShape(8.dp),
+                isError = uiState.emailError != null,
                 colors = TextFieldDefaults.colors(
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
@@ -185,6 +187,7 @@ fun LoginScreen(
                 value = password,
                 onValueChange = {
                     password = it
+                    viewModel.onPasswordChange(it.text)
                 },
                 prefix = {
                     Icon(imageVector = Icons.Outlined.Lock, contentDescription = "Lock icon")
@@ -203,6 +206,7 @@ fun LoginScreen(
                     }
                 },
                 shape = RoundedCornerShape(8.dp),
+                isError = uiState.passwordError != null,
                 colors = TextFieldDefaults.colors(
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
@@ -238,6 +242,39 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Show general error if exists
+            if (uiState.generalError != null) {
+                Text(
+                    text = uiState.generalError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            // Show email error if exists
+            if (uiState.emailError != null) {
+                Text(
+                    text = uiState.emailError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            // Show password error if exists
+            if (uiState.passwordError != null) {
+                Text(
+                    text = uiState.passwordError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
             /**
              * Here is screen Login button
              */
@@ -268,7 +305,7 @@ fun LoginScreen(
                         .fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 onClick = {
-                    onLoginSuccess()
+                    viewModel.onLoginClick(onLoginSuccess)
                 },
                 enabled = !uiState.isLoading
 

@@ -11,11 +11,11 @@ actual class UserSharedPreference(context: Context) {
         return sharedPreferences.getString("token", null)
     }
 
-    fun setToken(token: String) {
+    actual fun setToken(token: String) {
         sharedPreferences.edit().putString("token", token).apply()
     }
 
-    fun clearToken() {
+    actual fun clearToken() {
         sharedPreferences.edit().remove("token").apply()
     }
 }

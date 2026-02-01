@@ -24,11 +24,11 @@ import androidx.compose.ui.unit.dp
 import com.mall.hrmnew.model.domain.AttendanceRecord
 import com.mall.hrmnew.ui.theme.Spacing
 import com.mall.hrmnew.viewmodel.attendance.AttendanceViewModel
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.Clock.System
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 
@@ -162,7 +162,7 @@ fun AttendanceCalendar(
 ) {
     var currentMonth by remember {
         mutableStateOf(
-            System.now()
+            Clock.System.now()
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .date
         )
@@ -250,7 +250,7 @@ fun AttendanceCalendar(
             // Calendar Grid
             val firstDayOfMonth = getFirstDayOfMonth(currentMonth)
             val daysInMonth = getDaysInMonth(currentMonth)
-            val today = System.now()
+            val today = Clock.System.now()
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .date
 

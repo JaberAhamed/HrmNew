@@ -8,11 +8,11 @@ actual class UserSharedPreference {
         return userDefaults.stringForKey("token")
     }
 
-    fun setToken(token: String) {
+    actual fun setToken(token: String) {
         userDefaults.setObject(token, "token")
     }
 
-    fun clearToken() {
+    actual fun clearToken() {
         userDefaults.removeObjectForKey("token")
     }
 }
